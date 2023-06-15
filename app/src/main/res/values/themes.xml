@@ -1,0 +1,24 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyApplication" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="android:statusBarColor">@color/bgBlue</item>
+
+    </style>
+
+    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+
+    <style name="SCBSwitch" parent="Theme.AppCompat.Light">
+        <!-- active thumb & track color (30% transparency) -->
+        <item name="colorControlActivated">@color/blue</item>
+
+        <!-- inactive thumb color -->
+        <item name="colorSwitchThumbNormal">@color/seaBlue
+        </item>
+
+        <!-- inactive track color (30% transparency) -->
+        <item name="android:colorForeground">#42221f1f
+        </item>
+    </style>
+</resources>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:layout_margin="5dp"
+    app:cardCornerRadius="15dp"
+    app:cardElevation="8dp">
+
+    <!--on below line we are creating
+        a linear layout for grid view item-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:orientation="vertical">
+
+        <!--on below line we are creating
+             a simple image view-->
+        <ImageView
+            android:id="@+id/idIVCourse"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_gravity="center"
+            android:layout_marginTop="30dp"
+            android:padding="4dp"
+            android:src="@drawable/lamp" />
+
+        <!--on below line we are creating
+            a simple text view-->
+        <TextView
+            android:id="@+id/idTVCourse"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:padding="4dp"
+            android:text="@string/app_name"
+            android:textAlignment="center"
+            android:textColor="@color/black"
+            android:textSize="8pt" />
+
+    </LinearLayout>
+
+</androidx.cardview.widget.CardView>
