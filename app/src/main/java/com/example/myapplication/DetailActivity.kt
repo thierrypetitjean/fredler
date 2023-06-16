@@ -62,11 +62,14 @@ class DetailActivity() : AppCompatActivity() {
                 println("on")
                 runBlocking {
                     turnLampOnOff(device.devicename!!)
+//                    turnColor(device.devicename!!, "#03a9fc")
                 }
             } else {
                 println("off")
                 runBlocking {
                     turnLampOnOff(device.devicename!!)
+//                    turnColor(device.devicename!!, "#acb55e")
+
                 }
             }
         }
@@ -246,6 +249,31 @@ class DetailActivity() : AppCompatActivity() {
 
     fun turnBrightness(deviceName: String, progress: Int){
         val payload = "{'topic':'"+deviceName+"','feature':{'brightness':'" + progress +"'}}"
+
+        val json = JSONObject(payload)
+        val okHttpClient = OkHttpClient()
+        val requestBody = json.toString().toRequestBody()
+        val request = Request.Builder()
+            .method("POST", requestBody)
+            .addHeader("Accept", "application/json; q=0.5")
+            .url("http://192.168.0.100:8000/api/set")
+            .build()
+        okHttpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle this
+                Log.d("API ", "error = " + e)
+
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                // Handle this
+                Log.d("API ", "response " + response.message)
+            }
+        })
+    }
+
+    fun turnColor(deviceName: String, colorHex: String){
+        val payload = "{'topic':'"+deviceName+"','feature':{'color':'" + colorHex +"'}}"
 
         val json = JSONObject(payload)
         val okHttpClient = OkHttpClient()
