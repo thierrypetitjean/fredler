@@ -1,16 +1,15 @@
 package com.example.myapplication
 
-import android.app.Activity
 import android.content.ContentValues
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageView
 import android.widget.SeekBar
-import android.widget.Switch
+import android.widget.SeekBar.OnSeekBarChangeListener
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.liveData
@@ -18,15 +17,19 @@ import com.example.myapplication.data.Device
 import com.example.myapplication.data.Payload
 import com.google.gson.Gson
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
 import okhttp3.sse.EventSource
 import okhttp3.sse.EventSourceListener
 import okhttp3.sse.EventSources
 import org.json.JSONObject
+import java.io.IOException
 
 
 class DetailActivity() : AppCompatActivity() {
@@ -57,10 +60,32 @@ class DetailActivity() : AppCompatActivity() {
         swOnOff.setOnCheckedChangeListener { buttonView, isChecked ->
             if (isChecked) {
                 println("on")
+                runBlocking {
+                    turnLampOnOff(device.devicename!!)
+                }
             } else {
                 println("off")
+                runBlocking {
+                    turnLampOnOff(device.devicename!!)
+                }
             }
         }
+
+        seekBar.setOnSeekBarChangeListener(object : OnSeekBarChangeListener {
+            override fun onStopTrackingTouch(seekBar: SeekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar) {
+                // TODO Auto-generated method stub
+            }
+
+            override fun onProgressChanged(seekBar: SeekBar, progress: Int, fromUser: Boolean) {
+                // TODO Auto-generated method stub
+                turnBrightness(device.devicename!!, progress)
+                Toast.makeText(applicationContext, progress.toString(), Toast.LENGTH_LONG).show()
+            }
+        })
 
         deviceLiveData = liveData {
             val singleDevice = getDevicesFromJson(app.updateJson)
@@ -144,8 +169,8 @@ class DetailActivity() : AppCompatActivity() {
                                         ivDev.setImageResource(R.drawable.lamp)
 
                                         Log.d("testdevice","detail = " + device)
-                                        if(device.payload?.linkquality != null) {
-                                            seekBar.progress = device.payload?.linkquality!!
+                                        if(device.payload?.brightness != null) {
+                                            seekBar.progress = device.payload?.brightness!!
                                         }
                                     }
                                 }
@@ -192,5 +217,55 @@ class DetailActivity() : AppCompatActivity() {
         }
 
         return device
+    }
+
+    fun turnLampOnOff(deviceName: String){
+        val payload = "{'topic':'"+deviceName+"','feature':{'state':'toggle'}}"
+
+        val json = JSONObject(payload)
+        val okHttpClient = OkHttpClient()
+        val requestBody = json.toString().toRequestBody()
+        val request = Request.Builder()
+            .method("POST", requestBody)
+            .addHeader("Accept", "application/json; q=0.5")
+            .url("http://192.168.0.100:8000/api/set")
+            .build()
+        okHttpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle this
+                Log.d("API ", "error = " + e)
+
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                // Handle this
+                Log.d("API ", "response " + response.message)
+            }
+        })
+    }
+
+    fun turnBrightness(deviceName: String, progress: Int){
+        val payload = "{'topic':'"+deviceName+"','feature':{'brightness':'" + progress +"'}}"
+
+        val json = JSONObject(payload)
+        val okHttpClient = OkHttpClient()
+        val requestBody = json.toString().toRequestBody()
+        val request = Request.Builder()
+            .method("POST", requestBody)
+            .addHeader("Accept", "application/json; q=0.5")
+            .url("http://192.168.0.100:8000/api/set")
+            .build()
+        okHttpClient.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                // Handle this
+                Log.d("API ", "error = " + e)
+
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                // Handle this
+                Log.d("API ", "response " + response.message)
+            }
+        })
     }
 }

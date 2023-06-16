@@ -82,8 +82,8 @@ class MainActivity : AppCompatActivity() {
         }
 
         devicesLiveData = liveData {
-            val devList = getDevJson(app.devicesJson)
-            emit(devList)
+//            val devList = getDevJson(app.devicesJson)
+//            emit(devList)
         }
 
         // Create the observer which updates the UI.
@@ -131,11 +131,11 @@ class MainActivity : AppCompatActivity() {
                                 if (result.isNotEmpty()) {
                                     runOnUiThread {
                                         // Stuff that updates the UI
-                                        devicesLiveData = liveData {
-                                            val devList = getDevJson(app.devicesJson)
-                                            emit(devList)
-                                        }
-                                        //courseAdapter.notifyDataSetChanged()
+//                                        devicesLiveData = liveData {
+//                                            val devList = getDevJson(app.devicesJson)
+//                                            emit(devList)
+//                                        }
+                                        courseAdapter.notifyDataSetChanged()
                                     }
 
                                 }
